@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For My Little Catty 🐱</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --rose: #e8476a;
+      --blush: #f7a8bb;
+      --peach: #ffd6c0;
+      --cream: #fff8f0;
+      --gold: #d4a853;
+      --deep: #5c1a2e;
+      --soft: #fce4ec;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Lora', serif;
+      background: var(--cream);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 18px; height: 18px;
+      background: var(--rose);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, background 0.3s;
+      mix-blend-mode: multiply;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 40px; height: 40px;
+      border: 2px solid var(--blush);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+    }
+
+    /* Background */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(232,71,106,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 90%, rgba(212,168,83,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 50% at 50% 50%, rgba(247,168,187,0.08) 0%, transparent 70%),
+        linear-gradient(160deg, #fff8f0 0%, #fce4ec 40%, #fff0e6 70%, #fdf6ff 100%);
+    }
+
+    /* Floating petals */
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1;
+      font-size: 1.2rem;
+      opacity: 0;
+      animation: floatPetal linear infinite;
+    }
+    @keyframes floatPetal {
+      0% { transform: translateY(110vh) rotate(0deg) scale(0.5); opacity: 0; }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.5; }
+      100% { transform: translateY(-10vh) rotate(720deg) scale(1.2); opacity: 0; }
+    }
+
+    /* Main container */
+    .page {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 80px;
+    }
+
+    /* Header stars */
+    .stars-line {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      animation: fadeDown 1s ease both;
+    }
+    .stars-line span { font-size: 1.4rem; animation: twinkle 2s ease-in-out infinite; }
+    .stars-line span:nth-child(2) { animation-delay: 0.3s; }
+    .stars-line span:nth-child(3) { animation-delay: 0.6s; }
+    @keyframes twinkle { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+
+    /* Card */
+    .card {
+      max-width: 680px;
+      width: 100%;
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(20px);
+      border-radius: 32px;
+      border: 1.5px solid rgba(232,71,106,0.15);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.9) inset,
+        0 30px 80px rgba(232,71,106,0.12),
+        0 8px 24px rgba(0,0,0,0.06);
+      padding: 56px 52px;
+      position: relative;
+      overflow: hidden;
+      animation: riseUp 1.2s cubic-bezier(0.22,1,0.36,1) 0.3s both;
+    }
+    @keyframes riseUp {
+      from { opacity: 0; transform: translateY(60px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Corner decorations */
+    .card::before, .card::after {
+      content: '';
+      position: absolute;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+    }
+    .card::before {
+      top: -60px; left: -60px;
+      background: radial-gradient(circle, rgba(232,71,106,0.12), transparent 70%);
+    }
+    .card::after {
+      bottom: -60px; right: -60px;
+      background: radial-gradient(circle, rgba(212,168,83,0.12), transparent 70%);
+    }
+
+    /* Corner rose ornaments */
+    .ornament {
+      position: absolute;
+      font-size: 1.8rem;
+      opacity: 0.4;
+      animation: gentlePulse 3s ease-in-out infinite;
+    }
+    .ornament.tl { top: 20px; left: 24px; }
+    .ornament.tr { top: 20px; right: 24px; transform: scaleX(-1); }
+    .ornament.bl { bottom: 20px; left: 24px; transform: scaleY(-1); }
+    .ornament.br { bottom: 20px; right: 24px; transform: scale(-1); }
+    @keyframes gentlePulse { 0%,100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.1); opacity: 0.6; } }
+    .ornament.tr { transform: scaleX(-1); }
+
+    /* Greeting */
+    .greeting {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.1rem;
+      color: var(--rose);
+      letter-spacing: 0.05em;
+      text-align: center;
+      margin-bottom: 10px;
+      animation: fadeDown 1s ease 0.8s both;
+    }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Cat emoji big */
+    .cat-emoji {
+      text-align: center;
+      font-size: 4.5rem;
+      margin: 8px 0 16px;
+      animation: catBounce 1s ease 1s both, floatCat 4s ease-in-out 2s infinite;
+      display: block;
+    }
+    @keyframes catBounce { from { opacity: 0; transform: scale(0) rotate(-20deg); } 80% { transform: scale(1.15) rotate(5deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+    @keyframes floatCat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    /* Main title */
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      text-align: center;
+      color: var(--deep);
+      line-height: 1.2;
+      margin-bottom: 8px;
+      animation: fadeDown 1s ease 1.1s both;
+    }
+    .title span {
+      font-style: italic;
+      color: var(--rose);
+      position: relative;
+      display: inline-block;
+    }
+    .title span::after {
+      content: '';
+      position: absolute;
+      bottom: 2px; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--blush), transparent);
+      border-radius: 2px;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0;
+      animation: fadeDown 1s ease 1.3s both;
+    }
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(232,71,106,0.3), transparent);
+    }
+    .divider-icon { font-size: 1.2rem; }
+
+    /* Message body */
+    .message {
+      font-family: 'Lora', serif;
+      font-size: 1.08rem;
+      line-height: 1.95;
+      color: #5a3040;
+      text-align: center;
+    }
+    .message p {
+      margin-bottom: 18px;
+      animation: fadeUp 1s ease both;
+      opacity: 0;
+    }
+    .message p:nth-child(1) { animation-delay: 1.5s; }
+    .message p:nth-child(2) { animation-delay: 1.8s; }
+    .message p:nth-child(3) { animation-delay: 2.1s; }
+    .message p:nth-child(4) { animation-delay: 2.4s; }
+    .message p:nth-child(5) { animation-delay: 2.7s; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .message .highlight {
+      font-style: italic;
+      color: var(--rose);
+      font-weight: 600;
+    }
+    .message .bold { font-weight: 700; color: var(--deep); }
+
+    /* Quote box */
+    .quote-box {
+      background: linear-gradient(135deg, rgba(232,71,106,0.07), rgba(247,168,187,0.1));
+      border-left: 3px solid var(--rose);
+      border-radius: 0 16px 16px 0;
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.12rem;
+      color: var(--deep);
+      text-align: left;
+      animation: fadeUp 1s ease 2.9s both;
+      opacity: 0;
+    }
+
+    /* Hearts row */
+    .hearts-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+      animation: fadeUp 1s ease 3.2s both;
+      opacity: 0;
+    }
+    .heart {
+      font-size: 1.6rem;
+      animation: heartBeat 1.5s ease-in-out infinite;
+      display: inline-block;
+    }
+    .heart:nth-child(1) { animation-delay: 0s; font-size: 1.1rem; }
+    .heart:nth-child(2) { animation-delay: 0.2s; font-size: 1.6rem; }
+    .heart:nth-child(3) { animation-delay: 0.4s; font-size: 2rem; color: var(--rose); }
+    .heart:nth-child(4) { animation-delay: 0.6s; font-size: 1.6rem; }
+    .heart:nth-child(5) { animation-delay: 0.8s; font-size: 1.1rem; }
+    @keyframes heartBeat {
+      0%,100% { transform: scale(1); }
+      14% { transform: scale(1.2); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.15); }
+      70% { transform: scale(1); }
+    }
+
+    /* Signature */
+    .signature {
+      text-align: center;
+      margin-top: 28px;
+      animation: fadeUp 1s ease 3.5s both;
+      opacity: 0;
+    }
+    .signature .from {
+      font-family: 'Lora', serif;
+      font-size: 0.9rem;
+      color: #999;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .signature .name {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.4rem;
+      color: var(--rose);
+      font-weight: 700;
+    }
+    .signature .location {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-top: 4px;
+    }
+
+    /* Flag ribbon */
+    .flags {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      animation: fadeUp 1s ease 3.7s both;
+      opacity: 0;
+    }
+    .flag-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 2.2rem;
+    }
+    .flag-item span {
+      font-size: 0.7rem;
+      color: #bbb;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .flags-connector {
+      font-size: 1.2rem;
+      color: var(--rose);
+      animation: heartBeat 1.5s ease-in-out infinite;
+    }
+
+    /* Bottom message */
+    .bottom-wish {
+      margin-top: 40px;
+      text-align: center;
+      animation: fadeUp 1s ease 4s both;
+      opacity: 0;
+    }
+    .bottom-wish p {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5rem;
+      color: var(--gold);
+      line-height: 1.6;
+    }
+
+    /* Floating hearts background animation */
+    .float-heart {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1;
+      font-size: 1.4rem;
+      opacity: 0;
+      animation: floatHeart linear infinite;
+    }
+    @keyframes floatHeart {
+      0% { transform: translateY(110vh) scale(0.5) rotate(-10deg); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-10vh) scale(1.2) rotate(10deg); opacity: 0; }
+    }
+
+    @media (max-width: 600px) {
+      .card { padding: 36px 28px; border-radius: 24px; }
+      .title { font-size: 2rem; }
+      .message { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Background layer -->
+  <div class="bg-layer"></div>
+
+  <!-- Floating elements will be created by JS -->
+
+  <div class="page">
+    <div class="stars-line">
+      <span>✨</span><span>🌸</span><span>✨</span>
+    </div>
+
+    <div class="card">
+      <!-- Corner ornaments -->
+      <div class="ornament tl">🌹</div>
+      <div class="ornament tr">🌹</div>
+      <div class="ornament bl">🌷</div>
+      <div class="ornament br">🌷</div>
+
+      <p class="greeting">A little something just for you...</p>
+
+      <span class="cat-emoji">🐱</span>
+
+      <h1 class="title">Hello, My Little <span>Catty</span></h1>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">🌸</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="message">
+        <p>
+          Hi there, my little catty — how are you? 🥰<br/>
+          This is <span class="highlight">Mehar</span>, your bonnie all the way from <span class="bold">Pakistan</span>.<br/>
+          I just wanted to take a moment to remind you how truly <span class="highlight">special</span> you are.
+        </p>
+
+        <p>
+          You came into my life like a beautiful surprise —<br/>
+          soft, warm, and completely <span class="highlight">wonderful</span>.<br/>
+          The kind of person you don't find twice. 🌸
+        </p>
+
+        <div class="quote-box">
+          "Some people arrive and make such a beautiful impact on your life,
+          you can barely remember what it was like without them." 💫
+        </div>
+
+        <p>
+          You are one of the most <span class="bold">genuinely kind</span> souls I have ever known.<br/>
+          Your smile carries sunshine, your heart carries <span class="highlight">gold</span>.<br/>
+          And you make the world around you so much brighter. 🌺
+        </p>
+
+        <p>
+          From the other side of the world —<br/>
+          from <span class="bold">Pakistan</span> to <span class="bold">Indonesia</span> —<br/>
+          I am grateful every day that our paths crossed. 🌏
+        </p>
+
+        <p>
+          So today and every day,<br/>
+          I hope you feel <span class="highlight">loved</span>, I hope you feel <span class="highlight">seen</span>,<br/>
+          and I hope you know just how <span class="bold">precious</span> you truly are. 💖
+        </p>
+      </div>
+
+      <div class="hearts-row">
+        <span class="heart">🤍</span>
+        <span class="heart">🩷</span>
+        <span class="heart">❤️</span>
+        <span class="heart">🩷</span>
+        <span class="heart">🤍</span>
+      </div>
+
+      <div class="signature">
+        <div class="from">With all the love, from</div>
+        <div class="name">Mehar 🐾</div>
+        <div class="location">Your Bonnie · Pakistan 🇵🇰</div>
+      </div>
+
+      <div class="flags">
+        <div class="flag-item">
+          <span>🇵🇰</span>
+          <span>Pakistan</span>
+        </div>
+        <div class="flags-connector">💕</div>
+        <div class="flag-item">
+          <span>🇮🇩</span>
+          <span>Indonesia</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-wish">
+      <p>Stay happy, stay safe, stay you. 🌹</p>
+      <p style="font-size:1.1rem; color:#ccc; font-family:'Lora',serif; margin-top:10px;">
+        Across oceans, always 💫
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      setTimeout(() => {
+        ring.style.left = e.clientX + 'px';
+        ring.style.top = e.clientY + 'px';
+      }, 80);
+    });
+
+    // Floating petals & hearts
+    const emojis = ['🌸', '🌺', '🌹', '💕', '✨', '🍃', '🌷', '💖', '🌼'];
+    function createFloater() {
+      const el = document.createElement('div');
+      el.style.cssText = `
+        position: fixed;
+        pointer-events: none;
+        z-index: 1;
+        font-size: ${Math.random() * 1.2 + 0.7}rem;
+        left: ${Math.random() * 100}vw;
+        bottom: -60px;
+        opacity: 0;
+        animation: floatPetal ${Math.random() * 8 + 10}s linear forwards;
+      `;
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 20000);
+    }
+    setInterval(createFloater, 800);
+    for (let i = 0; i < 6; i++) setTimeout(createFloater, i * 400);
+
+    // Click sparkle
+    document.addEventListener('click', e => {
+      for (let i = 0; i < 6; i++) {
+        const spark = document.createElement('div');
+        const angle = (i / 6) * Math.PI * 2;
+        const dist = Math.random() * 60 + 30;
+        spark.style.cssText = `
+          position: fixed;
+          left: ${e.clientX}px; top: ${e.clientY}px;
+          pointer-events: none; z-index: 9999;
+          font-size: ${Math.random() * 0.8 + 0.6}rem;
+          transform: translate(-50%, -50%);
+          transition: all 0.8s ease;
+          opacity: 1;
+        `;
+        spark.textContent = ['💖','✨','🌸','💕'][Math.floor(Math.random()*4)];
+        document.body.appendChild(spark);
+        setTimeout(() => {
+          spark.style.transform = `translate(calc(-50% + ${Math.cos(angle)*dist}px), calc(-50% + ${Math.sin(angle)*dist}px)) scale(0)`;
+          spark.style.opacity = '0';
+        }, 10);
+        setTimeout(() => spark.remove(), 820);
+      }
+    });
+  </script>
+
+</body>
+</html>
